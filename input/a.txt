@@ -1,0 +1,3 @@
+rectangle name disk1 min-x 190.0 min-y 180.0 width 20.0 height 30 color 0.0018560142 0.19547537 0.35467055 from 50 to 302
+rectangle name disk2 min-x 167.5 min-y 210.0 width 65.0 height 30 color 0.02582317 0.9691984 0.16393086 from 50 to 302
+rectangle name disk3 min-x 145.0 min-y 240.0 width 110.0 height 30 color 0.044487324 0.17937791 0.6875181 from 50 to 302

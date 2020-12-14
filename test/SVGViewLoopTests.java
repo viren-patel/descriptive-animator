@@ -1,0 +1,394 @@
+import org.junit.Before;
+import org.junit.Test;
+
+import cs3500.animator.controller.IController;
+import cs3500.animator.model.AnimationModel;
+import cs3500.animator.model.AnimationModelImpl;
+import cs3500.animator.view.SVGView;
+
+import static junit.framework.TestCase.assertEquals;
+
+/**
+ * Tests SVG view when looping is enabled.
+ */
+public class SVGViewLoopTests {
+
+
+  AnimationModel model;
+  SVGView view;
+  IController controller;
+  StringBuilder sb;
+
+  /**
+   * Initializes a simple animation.
+   */
+  @Before
+  public void init() {
+    AnimationModelImpl.Builder b = AnimationModelImpl.builder();
+    b.addRectangle("R", 200, 200, 500, 200,
+            0, 0, 1, 5, 100);
+    b.addOval("C", 300, 800, 100, 300, 0, .5f, 1,
+            0, 100);
+    b.addMove("R", 200, 200, 0, 0, 5,
+            100);
+    b.addMove("C", 300, 800, 500, 200, 50,
+            100);
+    b.addColorChange("R", 0, 0, 1, 1, 0, 0, 50,
+            100);
+    b.addColorChange("C", 0, 0, 0, 1, 1, 1, 25,
+            75);
+    b.addScaleToChange("C", 100, 300, 200, 600, 5,
+            100);
+    b.addScaleToChange("R", 500, 200, 10, 10, 75,
+            100);
+    model = b.build();
+    sb = new StringBuilder();
+    view = new SVGView();
+    view.setLooping(true, model.maxTime());
+    view.setOutput(sb);
+    controller = IController.builder().speed(10).model(model).view(view).build();
+  }
+
+  @Test
+  public void testSVG1() {
+    controller.run();
+    assertEquals("<svg width=\"1000\" height=\"1000\" version=\"1.1\"\n" +
+            "     xmlns=\"http://www.w3.org/2000/svg\">\n" +
+            "<rect>\n" +
+            "   <animate id=\"base\" begin=\"0;base.end\" dur=\"10000.0ms\" attributeName=\"" +
+            "visibility\" from=\"hide\" to=\"hide\"/>\n" +
+            "</rect>\n" +
+            "<rect id=\"R\" x=\"200.0\" y=\"200.0\" width=\"500.0\" height=\"200.0\" fill=\"" +
+            "rgb(0,0,255)\" visibility=\"hidden\" >\n" +
+            "<set attributeName=\"visibility\" attributeType=\"CSS\" to=\"visible\" begin=\"" +
+            "base.begin+500.0ms\" dur =\"9500.0ms\" />\n" +
+            "<animate attributeType=\"xml\" begin=\"base.begin+500.0ms\" dur=\"9500.0ms\"" +
+            " attributeName=\"x\" from=\"200.0\" to=\"0.0\" fill=\"freeze\"/>\n" +
+            "<animate attributeType=\"xml\" begin=\"base.begin+500.0ms\" dur=\"9500.0ms\"" +
+            " attributeName=\"y\" from=\"200.0\" to=\"0.0\" fill=\"freeze\"/>\n" +
+            "<animate attributeType=\"xml\" begin=\"base.begin+5000.0ms\" dur=\"5000.0ms\"" +
+            " attributeName=\"fill\" from=\"rgb(0,0,255)\" to=\"rgb(255,0,0)\" fill=\"freeze\"/>\n"
+            + "<animate attributeType=\"xml\" begin=\"base.begin+7500.0ms\" dur=\"2500.0ms\" " +
+            "attributeName=\"width\" from=\"500.0\" to=\"10.0\" fill=\"freeze\"/>\n" +
+            "<animate attributeType=\"xml\" begin=\"base.begin+7500.0ms\" dur=\"2500.0ms\" " +
+            "attributeName=\"height\" from=\"200.0\" to=\"10.0\" fill=\"freeze\"/>\n" +
+            "<animate attributeType=\"xml\" begin=\"base.end\" dur=\"1ms\" attributeName=\"x\"" +
+            " to=\"200.0\" fill=\"freeze\" />\n" +
+            "<animate attributeType=\"xml\" begin=\"base.end\" dur=\"1ms\" attributeName=\"y\" " +
+            "to=\"200.0\" fill=\"freeze\" />\n" +
+            "<animate attributeType=\"xml\" begin=\"base.end\" dur=\"1ms\" attributeName=" +
+            "\"width\" to=\"500.0\" fill=\"freeze\" />\n" +
+            "<animate attributeType=\"xml\" begin=\"base.end\" dur=\"1ms\" attributeName=\"" +
+            "height\" to=\"200.0\" fill=\"freeze\" />\n" +
+            "<animate attributeType=\"xml\" begin=\"base.end\" dur=\"1ms\" attributeName=\"fill\" "
+            + "to=\"rgb(0,0,255)\" fill=\"freeze\" />\n" +
+            "\n" +
+            "\n" +
+            "</rect>\n" +
+            "<ellipse id=\"C\" cx=\"300.0\" cy=\"800.0\" rx=\"100.0\" ry=\"300.0\" " +
+            "fill=\"rgb(0,127,255)\" visibility=\"visible\" >\n" +
+            "<set attributeName=\"visibility\" attributeType=\"CSS\" to=\"visible\" " +
+            "begin=\"base.begin+0.0ms\" dur =\"10000.0ms\" />\n" +
+            "<animate attributeType=\"xml\" begin=\"base.begin+500.0ms\" dur=\"9500.0ms\"" +
+            " attributeName=\"rx\" from=\"100.0\" to=\"200.0\" fill=\"freeze\"/>\n" +
+            "<animate attributeType=\"xml\" begin=\"base.begin+500.0ms\" dur=\"9500.0ms\" " +
+            "attributeName=\"ry\" from=\"300.0\" to=\"600.0\" fill=\"freeze\"/>\n" +
+            "<animate attributeType=\"xml\" begin=\"base.begin+2500.0ms\" dur=\"5000.0ms\"" +
+            " attributeName=\"fill\" from=\"rgb(0,0,0)\" to=\"rgb(255,255,255)\"" +
+            " fill=\"freeze\"/>\n" +
+            "<animate attributeType=\"xml\" begin=\"base.begin+5000.0ms\" dur=\"5000.0ms\" " +
+            "attributeName=\"cx\" from=\"300.0\" to=\"500.0\" fill=\"freeze\"/>\n" +
+            "<animate attributeType=\"xml\" begin=\"base.begin+5000.0ms\" dur=\"5000.0ms\" " +
+            "attributeName=\"cy\" from=\"800.0\" to=\"200.0\" fill=\"freeze\"/>\n" +
+            "\n" +
+            "<animate attributeType=\"xml\" begin=\"base.end\" dur=\"1ms\" attributeName=\"cx\" " +
+            "to=\"300.0\" fill=\"freeze\" />\n" +
+            "<animate attributeType=\"xml\" begin=\"base.end\" dur=\"1ms\" attributeName=\"cy\" " +
+            "to=\"800.0\" fill=\"freeze\" />\n" +
+            "<animate attributeType=\"xml\" begin=\"base.end\" dur=\"1ms\" attributeName=\"rx\"" +
+            " to=\"100.0\" fill=\"freeze\" />\n" +
+            "<animate attributeType=\"xml\" begin=\"base.end\" dur=\"1ms\" attributeName=\"ry\"" +
+            " to=\"300.0\" fill=\"freeze\" />\n" +
+            "<animate attributeType=\"xml\" begin=\"base.end\" dur=\"1ms\" attributeName=\"fill\"" +
+            " to=\"rgb(0,127,255)\" fill=\"freeze\" />\n" +
+            "\n" +
+            "</ellipse>\n" +
+            "</svg>", sb.toString());
+  }
+
+  @Test
+  public void testEmptyModel() {
+    model = AnimationModelImpl.builder().build();
+    IController controller = IController.builder().speed(10).model(model).view(view).build();
+    controller.run();
+    assertEquals(sb.toString(), "<svg width=\"1000\" height=\"1000\" version=\"1.1\"\n" +
+            "     xmlns=\"http://www.w3.org/2000/svg\">\n" +
+            "<rect>\n" +
+            "   <animate id=\"base\" begin=\"0;base.end\" dur=\"10000.0ms\" attributeName=\"" +
+            "visibility\" from=\"hide\" to=\"hide\"/>\n" +
+            "</rect>\n" +
+            "</svg>");
+  }
+
+  @Test
+  public void addRect() {
+    model = AnimationModelImpl.builder().addRectangle("R", 0, 0,
+            10, 10, 0, 0, 0, 0, 100).build();
+    IController controller = IController.builder().speed(10).model(model).view(view).build();
+    controller.run();
+    assertEquals(sb.toString(), "<svg width=\"1000\" height=\"1000\" version=\"1.1\"\n" +
+            "     xmlns=\"http://www.w3.org/2000/svg\">\n" +
+            "<rect>\n" +
+            "   <animate id=\"base\" begin=\"0;base.end\" dur=\"10000.0ms\" " +
+            "attributeName=\"visibility\" from=\"hide\" to=\"hide\"/>\n" +
+            "</rect>\n" +
+            "<rect id=\"R\" x=\"0.0\" y=\"0.0\" width=\"10.0\" height=\"10.0\"" +
+            " fill=\"rgb(0,0,0)\" visibility=\"visible\" >\n" +
+            "<set attributeName=\"visibility\" attributeType=\"CSS\" to=\"visible\" " +
+            "begin=\"base.begin+0.0ms\" dur =\"10000.0ms\" />\n" +
+            "\n" +
+            "\n" +
+            "</rect>\n" +
+            "</svg>");
+  }
+
+  @Test
+  public void addRectMove() {
+    model = AnimationModelImpl.builder().addRectangle("R", 0, 0,
+            10, 10, 0, 0, 0, 0, 100).addMove(
+            "R", 0, 0, 5, 5,
+            10, 20).build();
+    IController controller = IController.builder().speed(10).model(model).view(view).build();
+    controller.run();
+    assertEquals(sb.toString(), "<svg width=\"1000\" height=\"1000\" version=\"1.1\"\n" +
+            "     xmlns=\"http://www.w3.org/2000/svg\">\n" +
+            "<rect>\n" +
+            "   <animate id=\"base\" begin=\"0;base.end\" dur=\"10000.0ms\" attributeName=\"" +
+            "visibility\" from=\"hide\" to=\"hide\"/>\n" +
+            "</rect>\n" +
+            "<rect id=\"R\" x=\"0.0\" y=\"0.0\" width=\"10.0\" height=\"10.0\" fill=\"" +
+            "rgb(0,0,0)\" visibility=\"visible\" >\n" +
+            "<set attributeName=\"visibility\" attributeType=\"CSS\" to=\"visible\" begin=\"" +
+            "base.begin+0.0ms\" dur =\"10000.0ms\" />\n" +
+            "<animate attributeType=\"xml\" begin=\"base.begin+1000.0ms\" dur=\"1000.0ms\"" +
+            " attributeName=\"x\" from=\"0.0\" to=\"5.0\" fill=\"freeze\"/>\n" +
+            "<animate attributeType=\"xml\" begin=\"base.begin+1000.0ms\" dur=\"1000.0ms\" " +
+            "attributeName=\"y\" from=\"0.0\" to=\"5.0\" fill=\"freeze\"/>\n" +
+            "<animate attributeType=\"xml\" begin=\"base.end\" dur=\"1ms\" attributeName=\"x\" " +
+            "to=\"0.0\" fill=\"freeze\" />\n" +
+            "<animate attributeType=\"xml\" begin=\"base.end\" dur=\"1ms\" attributeName=\"y\"" +
+            " to=\"0.0\" fill=\"freeze\" />\n" +
+            "\n" +
+            "\n" +
+            "</rect>\n" +
+            "</svg>");
+  }
+
+  @Test
+  public void addRectScale() {
+    model = AnimationModelImpl.builder().addRectangle("R", 0, 0,
+            10, 10, 0, 0, 0, 0, 100).addScaleToChange(
+            "R", 0, 0, 5, 5,
+            10, 20).build();
+    IController controller = IController.builder().speed(10).model(model).view(view).build();
+
+    controller.run();
+    assertEquals(sb.toString(), "<svg width=\"1000\" height=\"1000\" version=\"1.1\"\n" +
+            "     xmlns=\"http://www.w3.org/2000/svg\">\n" +
+            "<rect>\n" +
+            "   <animate id=\"base\" begin=\"0;base.end\" dur=\"10000.0ms\" attributeName=\"" +
+            "visibility\" from=\"hide\" to=\"hide\"/>\n" +
+            "</rect>\n" +
+            "<rect id=\"R\" x=\"0.0\" y=\"0.0\" width=\"10.0\" height=\"10.0\" fill=\"" +
+            "rgb(0,0,0)\" visibility=\"visible\" >\n" +
+            "<set attributeName=\"visibility\" attributeType=\"CSS\" to=\"visible\" " +
+            "begin=\"base.begin+0.0ms\" dur =\"10000.0ms\" />\n" +
+            "<animate attributeType=\"xml\" begin=\"base.begin+1000.0ms\" dur=\"1000.0ms\" " +
+            "attributeName=\"width\" from=\"0.0\" to=\"5.0\" fill=\"freeze\"/>\n" +
+            "<animate attributeType=\"xml\" begin=\"base.begin+1000.0ms\" dur=\"1000.0ms\" " +
+            "attributeName=\"height\" from=\"0.0\" to=\"5.0\" fill=\"freeze\"/>\n" +
+            "<animate attributeType=\"xml\" begin=\"base.end\" dur=\"1ms\" attributeName=\"" +
+            "width\" to=\"10.0\" fill=\"freeze\" />\n" +
+            "<animate attributeType=\"xml\" begin=\"base.end\" dur=\"1ms\" attributeName=\"" +
+            "height\" to=\"10.0\" fill=\"freeze\" />\n" +
+            "\n" +
+            "\n" +
+            "</rect>\n" +
+            "</svg>");
+  }
+
+  @Test
+  public void addRectColor() {
+    model = AnimationModelImpl.builder().addRectangle("R", 0, 0,
+            10, 10, 0, 0, 0, 0, 100).addColorChange(
+            "R", 0, 0, 0, 1, 1, 1,
+            10, 20).build();
+    IController controller = IController.builder().speed(10).model(model).view(view).build();
+
+    controller.run();
+    assertEquals(sb.toString(), "<svg width=\"1000\" height=\"1000\" version=\"1.1\"\n" +
+            "     xmlns=\"http://www.w3.org/2000/svg\">\n" +
+            "<rect>\n" +
+            "   <animate id=\"base\" begin=\"0;base.end\" dur=\"10000.0ms\" attributeName=\"" +
+            "visibility\" from=\"hide\" to=\"hide\"/>\n" +
+            "</rect>\n" +
+            "<rect id=\"R\" x=\"0.0\" y=\"0.0\" width=\"10.0\" height=\"10.0\" fill=\"" +
+            "rgb(0,0,0)\" visibility=\"visible\" >\n" +
+            "<set attributeName=\"visibility\" attributeType=\"CSS\" to=\"visible\" begin=\"" +
+            "base.begin+0.0ms\" dur =\"10000.0ms\" />\n" +
+            "<animate attributeType=\"xml\" begin=\"base.begin+1000.0ms\" dur=\"1000.0ms\"" +
+            " attributeName=\"fill\" from=\"rgb(0,0,0)\" to=\"rgb(255,255,255)\" fill=\"" +
+            "freeze\"/>\n" +
+            "<animate attributeType=\"xml\" begin=\"base.end\" dur=\"1ms\" attributeName=\"" +
+            "fill\" to=\"rgb(0,0,0)\" fill=\"freeze\" />\n" +
+            "\n" +
+            "\n" +
+            "</rect>\n" +
+            "</svg>");
+  }
+
+
+  @Test
+  public void addOval() {
+    model = AnimationModelImpl.builder().addOval("O", 0, 0,
+            10, 10, 0, 0, 0, 0, 100).build();
+    IController controller = IController.builder().speed(10).model(model).view(view).build();
+
+    controller.run();
+    assertEquals(sb.toString(), "<svg width=\"1000\" height=\"1000\" version=\"1.1\"\n" +
+            "     xmlns=\"http://www.w3.org/2000/svg\">\n" +
+            "<rect>\n" +
+            "   <animate id=\"base\" begin=\"0;base.end\" dur=\"10000.0ms\" attributeName=\"" +
+            "visibility\" from=\"hide\" to=\"hide\"/>\n" +
+            "</rect>\n" +
+            "<ellipse id=\"O\" cx=\"0.0\" cy=\"0.0\" rx=\"10.0\" ry=\"10.0\" fill=\"" +
+            "rgb(0,0,0)\" visibility=\"visible\" >\n" +
+            "<set attributeName=\"visibility\" attributeType=\"CSS\" to=\"visible\"" +
+            " begin=\"base.begin+0.0ms\" dur =\"10000.0ms\" />\n" +
+            "\n" +
+            "\n" +
+            "</ellipse>\n" +
+            "</svg>");
+  }
+
+  @Test
+  public void addOvalMove() {
+    model = AnimationModelImpl.builder().addOval("R", 0, 0,
+            10, 10, 0, 0, 0, 0, 100).addMove(
+            "R", 0, 0, 5, 5,
+            10, 20).build();
+    IController controller = IController.builder().speed(10).model(model).view(view).build();
+
+    controller.run();
+    assertEquals(sb.toString(), "<svg width=\"1000\" height=\"1000\" version=\"1.1\"\n" +
+            "     xmlns=\"http://www.w3.org/2000/svg\">\n" +
+            "<rect>\n" +
+            "   <animate id=\"base\" begin=\"0;base.end\" dur=\"10000.0ms\" " +
+            "attributeName=\"visibility\" from=\"hide\" to=\"hide\"/>\n" +
+            "</rect>\n" +
+            "<ellipse id=\"R\" cx=\"0.0\" cy=\"0.0\" rx=\"10.0\" ry=\"10.0\" " +
+            "fill=\"rgb(0,0,0)\" visibility=\"visible\" >\n" +
+            "<set attributeName=\"visibility\" attributeType=\"CSS\" to=\"visible\" " +
+            "begin=\"base.begin+0.0ms\" dur =\"10000.0ms\" />\n" +
+            "<animate attributeType=\"xml\" begin=\"base.begin+1000.0ms\" dur=\"1000.0ms\" " +
+            "attributeName=\"cx\" from=\"0.0\" to=\"5.0\" fill=\"freeze\"/>\n" +
+            "<animate attributeType=\"xml\" begin=\"base.begin+1000.0ms\" dur=\"1000.0ms\" " +
+            "attributeName=\"cy\" from=\"0.0\" to=\"5.0\" fill=\"freeze\"/>\n" +
+            "\n" +
+            "<animate attributeType=\"xml\" begin=\"base.end\" dur=\"1ms\" attributeName=\"" +
+            "cx\" to=\"0.0\" fill=\"freeze\" />\n" +
+            "<animate attributeType=\"xml\" begin=\"base.end\" dur=\"1ms\" attributeName=\"" +
+            "cy\" to=\"0.0\" fill=\"freeze\" />\n" +
+            "\n" +
+            "</ellipse>\n" +
+            "</svg>");
+  }
+
+  @Test
+  public void addOvalScale() {
+    model = AnimationModelImpl.builder().addOval("R", 0, 0,
+            10, 10, 0, 0, 0, 0, 100).addScaleToChange(
+            "R", 0, 0, 5, 5,
+            10, 20).build();
+    IController controller = IController.builder().speed(10).model(model).view(view).build();
+
+    controller.run();
+    assertEquals(sb.toString(), "<svg width=\"1000\" height=\"1000\" version=\"1.1\"\n" +
+            "     xmlns=\"http://www.w3.org/2000/svg\">\n" +
+            "<rect>\n" +
+            "   <animate id=\"base\" begin=\"0;base.end\" dur=\"10000.0ms\"" +
+            " attributeName=\"visibility\" from=\"hide\" to=\"hide\"/>\n" +
+            "</rect>\n" +
+            "<ellipse id=\"R\" cx=\"0.0\" cy=\"0.0\" rx=\"10.0\" ry=\"10.0\" " +
+            "fill=\"rgb(0,0,0)\" visibility=\"visible\" >\n" +
+            "<set attributeName=\"visibility\" attributeType=\"CSS\" to=\"" +
+            "visible\" begin=\"base.begin+0.0ms\" dur =\"10000.0ms\" />\n" +
+            "<animate attributeType=\"xml\" begin=\"base.begin+1000.0ms\" " +
+            "dur=\"1000.0ms\" attributeName=\"rx\" from=\"0.0\" to=\"5.0\" fill=\"freeze\"/>\n" +
+            "<animate attributeType=\"xml\" begin=\"base.begin+1000.0ms\" " +
+            "dur=\"1000.0ms\" attributeName=\"ry\" from=\"0.0\" to=\"5.0\" fill=\"freeze\"/>\n" +
+            "\n" +
+            "<animate attributeType=\"xml\" begin=\"base.end\" dur=\"1ms\" " +
+            "attributeName=\"rx\" to=\"10.0\" fill=\"freeze\" />\n" +
+            "<animate attributeType=\"xml\" begin=\"base.end\" dur=\"1ms\"" +
+            " attributeName=\"ry\" to=\"10.0\" fill=\"freeze\" />\n" +
+            "\n" +
+            "</ellipse>\n" +
+            "</svg>");
+  }
+
+  @Test
+  public void addOvalColor() {
+    model = AnimationModelImpl.builder().addOval("R", 0, 0,
+            10, 10, 0, 0, 0, 0, 100).addColorChange(
+            "R", 0, 0, 0, 1, 1, 1,
+            10, 20).build();
+    IController controller = IController.builder().speed(10).model(model).view(view).build();
+
+    controller.run();
+    assertEquals(sb.toString(), "<svg width=\"1000\" height=\"1000\" version=\"1.1\"\n" +
+            "     xmlns=\"http://www.w3.org/2000/svg\">\n" +
+            "<rect>\n" +
+            "   <animate id=\"base\" begin=\"0;base.end\" dur=\"10000.0ms\"" +
+            " attributeName=\"visibility\" from=\"hide\" to=\"hide\"/>\n" +
+            "</rect>\n" +
+            "<ellipse id=\"R\" cx=\"0.0\" cy=\"0.0\" rx=\"10.0\" ry=\"10.0\" " +
+            "fill=\"rgb(0,0,0)\" visibility=\"visible\" >\n" +
+            "<set attributeName=\"visibility\" attributeType=\"CSS\" to=\"" +
+            "visible\" begin=\"base.begin+0.0ms\" dur =\"10000.0ms\" />\n" +
+            "<animate attributeType=\"xml\" begin=\"base.begin+1000.0ms\" " +
+            "dur=\"1000.0ms\" attributeName=\"fill\" from=\"rgb(0,0,0)\" to=\"rgb(255,255,255)\"" +
+            " fill=\"freeze\"/>\n" +
+            "\n" +
+            "<animate attributeType=\"xml\" begin=\"base.end\" dur=\"1ms\" " +
+            "attributeName=\"fill\" to=\"rgb(0,0,0)\" fill=\"freeze\" />\n" +
+            "\n" +
+            "</ellipse>\n" +
+            "</svg>");
+  }
+
+
+  @Test
+  public void hiddenAtStart() {
+    model = AnimationModelImpl.builder().addRectangle("R", 0, 0,
+            10, 10, 0, 0, 0, 10, 100).build();
+    IController controller = IController.builder().speed(10).model(model).view(view).build();
+
+    controller.run();
+    assertEquals(sb.toString(), "<svg width=\"1000\" height=\"1000\" version=\"1.1\"\n" +
+            "     xmlns=\"http://www.w3.org/2000/svg\">\n" +
+            "<rect>\n" +
+            "   <animate id=\"base\" begin=\"0;base.end\" dur=\"10000.0ms\" attributeName=\"" +
+            "visibility\" from=\"hide\" to=\"hide\"/>\n" +
+            "</rect>\n" +
+            "<rect id=\"R\" x=\"0.0\" y=\"0.0\" width=\"10.0\" height=\"10.0\" fill=\"" +
+            "rgb(0,0,0)\" visibility=\"hidden\" >\n" +
+            "<set attributeName=\"visibility\" attributeType=\"CSS\" to=\"visible\" begin=\"" +
+            "base.begin+1000.0ms\" dur =\"9000.0ms\" />\n" +
+            "\n" +
+            "\n" +
+            "</rect>\n" +
+            "</svg>");
+  }
+
+}

@@ -1,0 +1,5 @@
+rectangle name disk1 min-x 800.0 min-y 240.0 width 110.0 height 30 color 0.044487324 0.17937791 0.6875181 from 1 to 100
+rectangle name disk2 min-x 183.57143 min-y 172.0 width 32.857143 height 11 color 0.13853869 0.68150055 0.28790247 from 1 to 100
+rotate name disk1 rotateto 0.0 270.0 from 20 to 90
+rotate name disk2 rotateto 0.0 270.0 from 20 to 90
+move name disk1 moveto 800.0 240.0 190.0 50 from 25 to 100
